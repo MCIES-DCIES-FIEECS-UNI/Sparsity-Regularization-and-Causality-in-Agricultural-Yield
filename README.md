@@ -1,1 +1,1 @@
-# Sparsity-Regularization-and-Causality-in-Agricultural-Yield
+# Sparsity Regularization and Causality in Agricultural Yield
