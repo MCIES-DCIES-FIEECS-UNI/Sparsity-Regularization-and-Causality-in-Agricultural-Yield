@@ -1,0 +1,194 @@
+// cargue las cuencas del Perú y seleccione la de su interés
+var watershedBoundaries = ee.FeatureCollection('users/hasencios/Cuencas_Peru');
+Map.addLayer(watershedBoundaries, {}, 'watersheds', false);
+var setExtent = watershedBoundaries.filterMetadata('NOMBRE', 'equals', 'Cuenca Santa');
+
+// fechas de consulta
+var startyear = 2014;
+var endyear = 2023;
+var startdate = ee.Date.fromYMD(startyear, 1, 1);
+var enddate = ee.Date.fromYMD(endyear, 12, 31);
+
+// Compuestos derivados de Landsat
+var annualGreenestList = ee.List.sequence(startyear, endyear).map(function (year) {
+  return ee.Image('users/hasencios/greenest_' + year + '_L8_NDVI_image');
+});
+
+// añadir series temporales de satélites: MODIS EVI 250m 16 días
+var collectionModEvi = ee.ImageCollection('MODIS/006/MOD13Q1')
+  .filterDate(ee.Date.fromYMD(startyear, 1, 1), ee.Date.fromYMD(endyear, 12, 31))
+  .filterBounds(setExtent)
+  .select("EVI");
+
+// añadir series temporales de satélites: MODIS NDVI 250m 16 días
+var collectionModNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+  .filterDate(ee.Date.fromYMD(startyear, 1, 1), ee.Date.fromYMD(endyear, 12, 31))
+  .filterBounds(setExtent)
+  .select("NDVI");
+
+// añadir series temporales de precipitación: CHIRPS 2.0
+var collectionCHIRPS = ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD")
+  .filterDate(ee.Date.fromYMD(startyear, 1, 1), ee.Date.fromYMD(endyear, 12, 31))
+  .filterBounds(setExtent)
+  .select("precipitation");
+
+// crear una lista de años
+var years = ee.List.sequence(startyear, endyear);
+var months = ee.List.sequence(1, 12);
+
+// filtrar chirps
+var Pchirps = collectionCHIRPS.filterDate(startdate, enddate)
+  .sort('system:time_start', false)
+  .select("precipitation");
+
+// calcular la P para cada mes
+var MonthlyChirps = ee.ImageCollection.fromImages(
+  years.map(function (y) {
+    return months.map(function (m) {
+      var w = Pchirps.filter(ee.Filter.calendarRange(y, y, 'year'))
+        .filter(ee.Filter.calendarRange(m, m, 'month'))
+        .sum();
+      return w.set('year', y)
+        .set('month', m)
+        .set('system:time_start', ee.Date.fromYMD(y, m, 1))
+        .set('date', ee.Date.fromYMD(y, m, 1));
+    });
+  }).flatten());
+
+// Añadir series temporales de temperatura: MODIS LST Day 1km
+var collectionModLST = ee.ImageCollection('MODIS/006/MOD11A2')
+  .filterDate(startdate, enddate)
+  .filterBounds(setExtent)
+  .select("LST_Day_1km");
+
+// Convertir la escala de temperatura de Kelvin a Celsius y ajustar la escala
+var tempToCelsius = function (image) {
+  var kelvin = image.select('LST_Day_1km').multiply(0.02);
+  var celsius = kelvin.subtract(273.15);
+  return image.addBands(celsius.rename('LST_Day_Celsius'));
+};
+
+// Aplicar la conversión a cada imagen en la colección
+var collectionModLSTCelsius = collectionModLST.map(tempToCelsius);
+
+// Crear una lista de años
+var years = ee.List.sequence(startyear, endyear);
+var days = ee.List.sequence(1, 365, 16);
+
+// Calcular la temperatura promedio para cada período de 16 días
+var meanLST = ee.ImageCollection.fromImages(
+  years.map(function (y) {
+    return days.map(function (d) {
+      var w = collectionModLSTCelsius.filter(ee.Filter.calendarRange(y, y, 'year'))
+        .filter(ee.Filter.dayOfYear(d, ee.Number(d).add(15)))
+        .mean();
+      return w.set('year', y)
+        .set('doy', d)
+        .set('system:time_start', ee.Date.fromYMD(y, 1, 1).advance(d, 'day'))
+        .set('date', ee.Date.fromYMD(y, 1, 1).advance(d, 'day'));
+    });
+  }).flatten());
+
+Map.centerObject(setExtent, 9);
+
+var palette = [
+  'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718',
+  '74A901', '66A000', '529400', '3E8601', '207401', '056201',
+  '004C00', '023B01', '012E01', '011D01', '011301'];
+
+// Crear la interfaz de usuario
+var panel = ui.Panel();
+panel.style().set('width', '500px');
+
+// Crear un panel de introducción con etiquetas
+var intro = ui.Panel([
+  ui.Label({
+    value: 'Gráfico de estacionalidad',
+    style: { fontSize: '20px', fontWeight: 'bold' }
+  }),
+  ui.Label('Haz click en un punto en el mapa o ingresa las coordenadas.')
+]);
+panel.add(intro);
+
+// Paneles para mantener los valores lon/lat
+var lon = ui.Label();
+var lat = ui.Label();
+panel.add(ui.Panel([lon, lat], ui.Panel.Layout.flow('horizontal')));
+
+// Campos de entrada para latitud y longitud
+var lonInput = ui.Textbox('Ingrese longitud');
+var latInput = ui.Textbox('Ingrese latitud');
+
+// Botón para actualizar gráficos
+var updateButton = ui.Button('Actualizar gráficos', function () {
+  var lonValue = parseFloat(lonInput.getValue());
+  var latValue = parseFloat(latInput.getValue());
+  if (!isNaN(lonValue) && !isNaN(latValue)) {
+    updateCharts(lonValue, latValue);
+  } else {
+    ui.alert('Por favor ingrese valores válidos para latitud y longitud.');
+  }
+});
+
+panel.add(ui.Panel([lonInput, latInput, updateButton], ui.Panel.Layout.flow('horizontal')));
+
+// Función para actualizar los gráficos
+function updateCharts(lonValue, latValue) {
+  var point = ee.Geometry.Point(lonValue, latValue);
+
+  // Actualiza el panel lon/lat con los valores ingresados
+  lon.setValue('lon: ' + lonValue.toFixed(6));
+  lat.setValue('lat: ' + latValue.toFixed(6));
+
+  // Añadir el punto al mapa
+  var pointLayer = ui.Map.Layer(point, {color: 'red'}, 'Punto seleccionado');
+  Map.layers().set(1, pointLayer); // Asegurarse de que se muestra el punto en la capa 1
+
+  // Centrar el mapa en el punto seleccionado
+  Map.centerObject(point, 10);
+
+  var eviChart = ui.Chart.image.series(collectionModEvi, point, ee.Reducer.mean(), 250);
+  eviChart.setOptions({
+    title: 'MODIS EVI',
+    vAxis: { title: 'EVI', maxValue: 9000 },
+    hAxis: { title: 'date', format: 'MM-yy', gridlines: { count: 7 } },
+  });
+  panel.widgets().set(5, eviChart);
+
+  var ndviChart = ui.Chart.image.series(collectionModNDVI, point, ee.Reducer.mean(), 250);
+  ndviChart.setOptions({
+    title: 'MODIS NDVI',
+    vAxis: { title: 'NDVI', maxValue: 9000 },
+    hAxis: { title: 'date', format: 'MM-yy', gridlines: { count: 7 } },
+    series: { 0: { color: '00FF00' } }
+  });
+  panel.widgets().set(6, ndviChart);
+
+  var ppChart = ui.Chart.image.series(MonthlyChirps, point, ee.Reducer.mean(), 5000);
+  ppChart.setOptions({
+    title: 'MONTHLY PRECIPITATION',
+    vAxis: { title: 'PP', maxValue: 500 },
+    hAxis: { title: 'date', format: 'MM-yy', gridlines: { count: 7 } },
+  });
+  panel.widgets().set(7, ppChart);
+
+  var lstChart = ui.Chart.image.series(collectionModLSTCelsius.select("LST_Day_Celsius"), point, ee.Reducer.mean(), 1000);
+  lstChart.setOptions({
+    title: 'MODIS LST Day 1km Celsius',
+    vAxis: { title: 'Temperature (°C)', minValue: 0, maxValue: 50 },
+    hAxis: { title: 'Date', format: 'MM-yy', gridlines: { count: 7 } },
+    series: { 0: { color: 'FF0000' } }
+  });
+  panel.widgets().set(8, lstChart);
+}
+
+Map.onClick(function (coords) {
+  lat.setValue('lat: ' + coords.lat.toFixed(6));
+  lon.setValue('lon: ' + coords.lon.toFixed(6));
+  updateCharts(coords.lon, coords.lat);
+});
+
+Map.style().set('cursor', 'crosshair');
+
+// Añade el panel a la ui.root
+ui.root.insert(0, panel);
