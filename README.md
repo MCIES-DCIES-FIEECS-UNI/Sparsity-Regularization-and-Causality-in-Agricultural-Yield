@@ -4,5 +4,5 @@ This study introduces a novel approach that integrates agricultural census data 
 To further enhance prediction accuracy, the first- and second-order dynamic transformations (velocity and acceleration) of these variables are applied, capturing non-linear patterns and delayed effects on yield. The findings highlight the improved predictive performance when combining regularization techniques with climatic and geospatial variables, enabling more precise forecasts of yield variability. The results confirm the
 existence of causal relationships in the Granger sense, emphasizing the value of this methodology for strategic agricultural management. This contributes to more efficient and sustainable production in paddy rice cultivation.
 
-![Kevin](Images/Doc2.pdf)
+!(Images/Doc2.pdf)
 
