@@ -17,3 +17,6 @@ Satellite images used in this study were acquired through remote sensing and pro
 Once the remotely sensed data and relevant agricultural census data were extracted, it was crucial to ensure robust temporal consistency and uniform quality and frequency before proceeding with the analysis. To achieve this, a Spline interpolation process was implemented, allowing the establishment of a weekly frequency in the NDVI, PREC, and TEMP. This process not only enhanced the accuracy in capturing the temporal variability of the data, but also enabled the division of the data into twelve lags, referred to as lags, for the NDVI, Precipitation, and Temperature variables. As a result, after interpolation, the three remote sensing variables are provided as time series with a weekly frequency.
 
 
+## Modeling Phase
+The final dataset considered for this study is composed of \( D = \{(x_i, y_i)\}_{i=1}^N \), where \( N = 348 \) represents the number of sampled plots. Here, the response variable \( y_i \in \mathbb{R} \), labeled as Prod-Hect, denotes the agricultural yield of the crop, measured in tons per hectare, where the harvest occurred in week \( T_i \). Additionally, the covariate vector \( x_i \in \mathbb{R}^{81} \) consists of two groups of variables.
+
