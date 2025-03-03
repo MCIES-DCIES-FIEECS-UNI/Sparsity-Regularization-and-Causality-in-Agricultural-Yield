@@ -22,6 +22,15 @@ The final dataset considered for this study is composed of $D = \{(x_i, y_i)\}_{
 
 
 ### Regression with Elastic-Net Regularization
+Given the dataset $ D $, our objective is to forecast agricultural yield $ y_i $ using the predictors $ x_i $ defined earlier. To achieve this, we assume a linear regression structure between the variables:
+
+
+
+$`[ y_i = \beta_0 + x_i^\top \beta + \xi_i, \]`$
+
+
+
+where the intercept $ \beta_0 $ and the weights $ \beta = (\beta_1, \ldots, \beta_{81}) $ are unknown parameters, and $ \xi_i $ represents the error term. Since our goal is to construct a simple and parsimonious model, and given that we have a large number of predictor variables that are closely related, we choose to induce moderate sparsity in the parameter vector.
 
 
 ### Gradient Tree Boosting
