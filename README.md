@@ -31,6 +31,14 @@ $`y_i = \beta_0 + x_i^\top \beta + \xi_i`$
 
 
 where the intercept $\beta_0$ and the weights $\beta = (\beta_1, \ldots, \beta_{81})$ are unknown parameters, and $\xi_i$ represents the error term. Since our goal is to construct a simple and parsimonious model, and given that we have a large number of predictor variables that are closely related, we choose to induce moderate sparsity in the parameter vector.
+Therefore, to obtain the parameter estimates \( (\hat{\beta}_0, \hat{\beta}) \), we opt for Elastic-Net regularization, which involves solving the convex optimization problem:
+
+
+
+$`\min_{(\beta_0, \beta) \in \mathbb{R} \times \mathbb{R}^{81}} \left\{ \frac{1}{2} \sum_{i=1}^{N} (y_i - \beta_0 - x_i^\top \beta)^2 + \lambda \left[ \frac{1}{2} (1 - \alpha) \|\beta\|_2^2 + \alpha \|\beta\|_1 \right] \right\}`$
+
+
+
 
 
 ### Gradient Tree Boosting
