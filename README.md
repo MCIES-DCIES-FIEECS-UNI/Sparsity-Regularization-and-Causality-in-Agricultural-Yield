@@ -43,6 +43,10 @@ $$
 \left( \sum_{k=1}^{\kappa} f_k(x_i) \right), f_k \in F
 $$
 
+$$
+\hat{y}_i = \phi(x_i) = ( \sum_{k=1}^{\kappa} f_k(x_i) ), f_k \in F
+$$
+
 where $F = \{ f: \mathbb{R}^{81} \rightarrow \mathbb{R} \mid f(x_i) = \omega_{q(x_i)} \}$ denotes the space of regression trees, also known as CART (see Breiman et al., 1984). It is important to note that each $f_k$ corresponds to an independent tree structure $q$ with its associated leaf weights $\omega$.
 
 ### Semi-parametric Additive Model
