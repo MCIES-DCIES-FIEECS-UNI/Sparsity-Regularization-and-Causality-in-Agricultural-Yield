@@ -26,9 +26,13 @@ The final dataset considered for this study is composed of $D = \{(x_i, y_i)\}_{
 
 ### Gradient Tree Boosting
 Let $q: \mathbb{R}^{81} \rightarrow T$ represent the structure of a tree that maps the characteristics of a crop $x_i$ to the index of the corresponding leaf. The weight vector of its leaves is given by $\omega = (\omega_1, \ldots, \omega_{|T|}) \in \mathbb{R}^{|T|}$, where $\omega_k$ denotes the score of the k-th leaf. Here, $T$ is the set of leaves of the tree, and $|T|$ indicates the total number of leaves. To obtain the prediction of agricultural yield $\hat{y}_i$, we will use an additive ensemble $\kappa$ of these trees, denoted by $\phi$, which can be expressed as follows:
-\[
+$$
 \hat{y}_i = \phi(x_i) = \sum_{k=1}^{\kappa} f_k(x_i), \quad f_k \in F
-\]
+$$
+
+$$
+\hat{y}_i = \phi(x_i) = \sum_{k=1}^{\kappa} f_k(x_i)
+$$
 where $F = \{ f: \mathbb{R}^{81} \rightarrow \mathbb{R} \mid f(x_i) = \omega_{q(x_i)} \}$ denotes the space of regression trees, also known as CART (see Breiman et al., 1984). It is important to note that each $f_k$ corresponds to an independent tree structure $q$ with its associated leaf weights $\omega$.
 
 ### Semi-parametric Additive Model
