@@ -6,3 +6,9 @@ existence of causal relationships in the Granger sense, emphasizing the value of
 
 ![yo](Images/Doc2.jpg)
 
+## Materials and Methods
+### Area of study
+me use paddy rice production in Peru as a case study for our methodologies. Several regions in Peru were selected as study areas, focusing on those with the highest concentrations of paddy rice production. The primary source of information for this analysis comes from the agricultural censuses conducted in Peru between 2015 and 2018, which provide detailed and up-to-date data on farming practices and characteristics (see Plataforma Nacional de Datos Abiertos, (2024)).
+
+### Remote sensing data
+Satellite images used in this study were acquired through remote sensing and processed using open-access tools such as Google Earth Engine (GEE). On this platform, radiometric and atmospheric corrections were applied, and cloud-induced variability was managed to ensure high-resolution images. In addition, key remote sensing variables that significantly influence crop development and yield were identified and selected, such as Normalized Difference Vegetation Index (NDVI), precipitation (PREC) and temperature (TEMP).
