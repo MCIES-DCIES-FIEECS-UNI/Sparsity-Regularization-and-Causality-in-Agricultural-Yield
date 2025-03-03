@@ -31,7 +31,7 @@ $`y_i = \beta_0 + x_i^\top \beta + \xi_i`$
 
 
 where the intercept $\beta_0$ and the weights $\beta = (\beta_1, \ldots, \beta_{81})$ are unknown parameters, and $\xi_i$ represents the error term. Since our goal is to construct a simple and parsimonious model, and given that we have a large number of predictor variables that are closely related, we choose to induce moderate sparsity in the parameter vector.
-Therefore, to obtain the parameter estimates \( (\hat{\beta}_0, \hat{\beta}) \), we opt for Elastic-Net regularization, which involves solving the convex optimization problem:
+Therefore, to obtain the parameter estimates $(\hat{\beta}_0, \hat{\beta})$, we opt for Elastic-Net regularization, which involves solving the convex optimization problem:
 
 
 
