@@ -53,6 +53,8 @@ $$
 \hat{y}_i = \phi(x_i) = \sum_{k=1}^{\kappa} f_k(x_i), \quad f_k \in F
 $$
 
+**The Cauchy-Schwarz Inequality**\
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
 
 where $F = \{ f: \mathbb{R}^{81} \rightarrow \mathbb{R} \mid f(x_i) = \omega_{q(x_i)} \}$ denotes the space of regression trees, also known as CART (see Breiman et al., 1984). It is important to note that each $f_k$ corresponds to an independent tree structure $q$ with its associated leaf weights $\omega$.
 
