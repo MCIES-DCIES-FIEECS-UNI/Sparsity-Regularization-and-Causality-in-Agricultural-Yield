@@ -31,9 +31,10 @@ $$\hat{y}_i = \phi(x_i) = \sum_{k=1}^{\kappa} f_k(x_i), \quad f_k \in F$$
 
 $$\hat{y}_i = \phi(x_i) = \bigg( \sum_{k=1}^{\kappa} f_k(x_i) \bigg), \quad f_k \in F$$
 
+
 $$\hat{y}_i = \phi(x_i) = \left( \sum_{k=1}^{\kappa} f_k(x_i) \right), f_k \in F$$
 
-$$\left( \sum_{k=1}^{\kappa} f_k(x_i) \right), f_k \in F$$
+$\hat{y}_i = \phi(x_i) = $ $$\left( \sum_{k=1}^{\kappa} f_k(x_i) \right), f_k \in F$$
 
 $$\hat{y}_i = \phi(x_i) = ( \sum_{k=1}^{\kappa} f_k(x_i) ), f_k \in F$$
 
