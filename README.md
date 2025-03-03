@@ -62,7 +62,7 @@ where $F = \{ f: \mathbb{R}^{81} \rightarrow \mathbb{R} \mid f(x_i) = \omega_{q(
 ### Semi-parametric Additive Model
 As a semiparametric alternative, we choose a Generalized Additive Model (GAM) structure, which in our case can be expressed as follows:
 
-$$[ \hat{y}_i = \theta_0 + \mathbf{z} i^\top \theta + \sum {j=1}^{72} f_j(w_i^{(j)}), \quad \text{(16)} ]$$
+$$[ \hat{y}_i = \theta_0 + \mathbf{z} i^\top \theta + \sum {j=1}^{72} f_j(w_i^{(j)}), ]$$
 
 
 where $ w_i^{(j)} $ is the $ j $-th coordinate of the vector defined in equation (10). In this model, $ \theta \in \mathbb{R}^9 $ represents a parameter vector, $ \theta_0 \in \mathbb{R} $ is the intercept, and $ f_j $ are smoothed functions to be estimated using the dataset $ D $. To estimate the model, we adopt the widely used approach of representing $f_j$ functions with reduced-rank smoothing splines resulting from solving variational problems.
