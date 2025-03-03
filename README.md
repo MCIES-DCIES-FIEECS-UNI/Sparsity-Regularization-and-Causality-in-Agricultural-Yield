@@ -36,3 +36,12 @@ $$
 where $F = \{ f: \mathbb{R}^{81} \rightarrow \mathbb{R} \mid f(x_i) = \omega_{q(x_i)} \}$ denotes the space of regression trees, also known as CART (see Breiman et al., 1984). It is important to note that each $f_k$ corresponds to an independent tree structure $q$ with its associated leaf weights $\omega$.
 
 ### Semi-parametric Additive Model
+As a semi-parametric alternative, we choose a Generalized Additive Model (GAM) structure, which can be expressed in our case as follows:
+
+
+\[
+\hat{y}_i = \theta_0 + \mathbf{z}_i^\top \theta + \sum_{j=1}^{72} f_j(w_i^{(j)}), \quad \text{(16)}
+\]
+
+
+where $ w_i^{(j)} $ is the $ j $-th coordinate of the vector defined in Eq. (10). In this model, $ \theta \in \mathbb{R}^9 $ represents a parameter vector, $ \theta_0 \in \mathbb{R} $ is the intercept, and $ f_j $ are smooth functions to be estimated using the dataset $ D $. To estimate the model in Eq. (16), we adopt the widely used approach of representing the functions $ f_j $ with reduced-rank smoothing splines that result from solving variational problems.
