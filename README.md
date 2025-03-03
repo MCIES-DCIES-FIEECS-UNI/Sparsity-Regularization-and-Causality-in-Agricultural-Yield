@@ -12,3 +12,8 @@ me use paddy rice production in Peru as a case study for our methodologies. Seve
 
 ### Remote sensing data
 Satellite images used in this study were acquired through remote sensing and processed using open-access tools such as Google Earth Engine (GEE). On this platform, radiometric and atmospheric corrections were applied, and cloud-induced variability was managed to ensure high-resolution images. In addition, key remote sensing variables that significantly influence crop development and yield were identified and selected, such as Normalized Difference Vegetation Index (NDVI), precipitation (PREC) and temperature (TEMP).
+
+### Data preprocessing
+Once the remotely sensed data and relevant agricultural census data were extracted, it was crucial to ensure robust temporal consistency and uniform quality and frequency before proceeding with the analysis. To achieve this, a Spline interpolation process was implemented, allowing the establishment of a weekly frequency in the NDVI, PREC, and TEMP. This process not only enhanced the accuracy in capturing the temporal variability of the data, but also enabled the division of the data into twelve lags, referred to as lags, for the NDVI, Precipitation, and Temperature variables. As a result, after interpolation, the three remote sensing variables are provided as time series with a weekly frequency.
+
+
